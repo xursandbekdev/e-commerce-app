@@ -1,24 +1,40 @@
-// src/context/AuthContext.tsx
-import React, { createContext, useContext, useState } from "react";
-
-type Role = "admin" | "user" | null;
-
-interface AuthContextType {
-  role: Role;
-  login: (role: Role) => void;
-  logout: () => void;
-}
+import React, { createContext, useContext, useState, useEffect } from "react";
+import type { AuthContextType, UserData } from "../interface";
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [role, setRole] = useState<Role>(null);
+const initialUser: UserData = {
+  token: null,
+  type: null,
+  username: null,
+  email: null,
+  role: null,
+};
 
-  const login = (newRole: Role) => setRole(newRole);
-  const logout = () => setRole(null);
+export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [user, setUser] = useState<UserData>(initialUser);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const stored = localStorage.getItem("auth");
+    if (stored) {
+      setUser(JSON.parse(stored));
+    }
+    setLoading(false);
+  }, []);
+
+  const login = (data: UserData) => {
+    setUser(data);
+    localStorage.setItem("auth", JSON.stringify(data));
+  };
+
+  const logout = () => {
+    setUser(initialUser);
+    localStorage.removeItem("auth");
+  };
 
   return (
-    <AuthContext.Provider value={{ role, login, logout }}>
+    <AuthContext.Provider value={{ user, login, logout, loading }}>
       {children}
     </AuthContext.Provider>
   );

@@ -1,25 +1,25 @@
-// src/components/ProtectedRoute.tsx
-import React from "react";
 import { Navigate } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../context/authContext";
 
 interface Props {
-  children: JSX.Element;
-  roles?: ("admin" | "user")[];
+  roles?: string[];
+  children: React.ReactNode;
 }
 
-const ProtectedRoute: React.FC<Props> = ({ children, roles }) => {
-  const { role } = useAuth();
+const ProtectedRoute = ({ roles = ["USER"], children }: Props) => {
+  const { user, loading } = useAuth();
 
-  if (!role) {
-    return <Navigate to="/login" replace />;
+  if (loading) {
+    // AuthProvider hali localStorage’ni tekshiryapti — hozircha redirect qilmaymiz
+    return <div>Loading...</div>;
   }
 
-  if (roles && !roles.includes(role)) {
-    return <Navigate to="/dashboard" replace />; // access denied
+  if (!user.token) return <Navigate to="/login" replace />;
+  if (roles && user.role && !roles.includes(user.role)) {
+    return <Navigate to="/" replace />;
   }
 
-  return children;
+  return <>{children}</>;
 };
 
 export default ProtectedRoute;

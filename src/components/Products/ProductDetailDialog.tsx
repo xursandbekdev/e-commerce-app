@@ -1,6 +1,7 @@
-import React from "react";
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Typography, Box } from "@mui/material";
-import type { Product } from "../../interface";
+import React from 'react';
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Typography, Box } from '@mui/material';
+import { useTranslation } from 'react-i18next'; 
+import type { Product } from '../../interface';
 
 interface ProductDetailsDialogProps {
   open: boolean;
@@ -9,28 +10,40 @@ interface ProductDetailsDialogProps {
 }
 
 const ProductDetailsDialog: React.FC<ProductDetailsDialogProps> = ({ open, onClose, selectedProduct }) => {
+  const { t, i18n } = useTranslation(); // Tarjima uchun hook
+
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
-      <DialogTitle className="text-title">Mahsulot Detallari</DialogTitle>
+      <DialogTitle className="text-title">{t('productDetails')}</DialogTitle>
       <DialogContent>
         {selectedProduct ? (
           <Box>
-            <Typography variant="h6" className="text-title">Nomi: {selectedProduct.name}</Typography>
-            <Typography className="text-body">Kategoriya: {selectedProduct.category}</Typography>
-            <Typography className="text-primary">Narx: {selectedProduct.price.toLocaleString()} so'm</Typography>
-            <Typography className="text-body">Stock: {selectedProduct.stock}</Typography>
-            <Typography className="text-body">Faol: {selectedProduct.isActive ? "Ha" : "Yo'q"}</Typography>
+            <Typography variant="h6" className="text-title">
+              {t('name')}: {selectedProduct.name}
+            </Typography>
+            <Typography className="text-body">
+              {t('category')}: {selectedProduct.category}
+            </Typography>
+            <Typography className="text-primary">
+              {t('price')}: {new Intl.NumberFormat(i18n.language === 'uz' ? 'uz-UZ' : 'en-US').format(selectedProduct.price)} {t('currency')}
+            </Typography>
+            <Typography className="text-body">
+              {t('stock')}: {selectedProduct.stock}
+            </Typography>
+            <Typography className="text-body">
+              {t('active')}: {selectedProduct.isActive ? t('yes') : t('no')}
+            </Typography>
             <Typography className="text-body mt-2">
-              Yaratilgan: {new Date(selectedProduct.createdAt).toLocaleString("uz-UZ")}
+              {t('createdAt')}: {new Date(selectedProduct.createdAt).toLocaleString(i18n.language === 'uz' ? 'uz-UZ' : 'en-US')}
             </Typography>
           </Box>
         ) : (
-          <Typography className="text-error">Mahsulot topilmadi!</Typography>
+          <Typography className="text-error">{t('productNotFound')}</Typography>
         )}
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose} variant="contained" className="bg-primary text-white">
-          Yopish
+          {t('close')}
         </Button>
       </DialogActions>
     </Dialog>

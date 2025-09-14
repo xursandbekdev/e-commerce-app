@@ -1,27 +1,15 @@
-
-import React from "react";
-import {
-  TextField,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  Button,
-  Box,
-  Grid,
-  IconButton,
-  InputAdornment,
-} from "@mui/material";
-import { Add as AddIcon, Search as SearchIcon } from "@mui/icons-material";
-import { type SelectChangeEvent } from "@mui/material/Select"; // Add this import
+import React from 'react';
+import { TextField, Button, IconButton, InputAdornment, FormControl, Select, MenuItem, InputLabel } from '@mui/material';
+import { Add as AddIcon, Search as SearchIcon } from '@mui/icons-material';
+import { useTranslation } from 'react-i18next'; // i18next hook
 
 interface ProductsFiltersProps {
   searchName: string;
   setSearchName: React.Dispatch<React.SetStateAction<string>>;
   searchCategory: string;
   setSearchCategory: React.Dispatch<React.SetStateAction<string>>;
-  viewMode: "grid" | "list";
-  setViewMode: React.Dispatch<React.SetStateAction<"grid" | "list">>;
+  viewMode: 'grid' | 'list';
+  setViewMode: React.Dispatch<React.SetStateAction<'grid' | 'list'>>;
   isAdmin: boolean;
   onAddOpen: () => void;
 }
@@ -36,70 +24,66 @@ const ProductsFilters: React.FC<ProductsFiltersProps> = ({
   isAdmin,
   onAddOpen,
 }) => {
-  // Fixed handler for search category Select
-  const handleCategoryChange = (e: SelectChangeEvent) => {
-    setSearchCategory(e.target.value as string);
-  };
+  const { t } = useTranslation(); // Tarjima uchun hook
 
   return (
-    <Box className="mb-6 bg-offwhite p-4 rounded-lg">
-      <Grid container spacing={2} alignItems="center">
-        <Grid item xs={12} sm={4}>
-          <TextField
-            fullWidth
-            label="Nomi bo'yicha qidirish"
-            value={searchName}
-            onChange={(e) => setSearchName(e.target.value)}
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">
-                  <IconButton>
-                    <SearchIcon />
-                  </IconButton>
-                </InputAdornment>
-              ),
-            }}
-            className="bg-input"
-          />
-        </Grid>
-        <Grid item xs={12} sm={4}>
-          <FormControl fullWidth>
-            <InputLabel>Kategoriya</InputLabel>
-            <Select
-              value={searchCategory}
-              label="Kategoriya"
-              onChange={handleCategoryChange}
-            >
-              <MenuItem value="">Barchasi</MenuItem>
-              <MenuItem value="Laptop">Laptop</MenuItem>
-              <MenuItem value="Phone">Phone</MenuItem>
-              <MenuItem value="Moto">Moto</MenuItem>
-              <MenuItem value="MacBook">MacBook</MenuItem>
-            </Select>
-          </FormControl>
-        </Grid>
-        <Grid item xs={12} sm={4}>
-          <Box className="flex justify-end space-x-2">
-            {isAdmin && (
-              <Button
-                variant="contained"
-                startIcon={<AddIcon />}
-                onClick={onAddOpen}
-                className="bg-primary text-white"
-              >
-                Qo'shish
-              </Button>
-            )}
+    <div className="mb-6 rounded-xl bg-white dark:bg-gray-800 p-5 shadow-sm">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
+        <TextField
+          fullWidth
+          size="small"
+          label={t('searchByName')}
+          value={searchName}
+          onChange={(e) => setSearchName(e.target.value)}
+          className="bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position="end">
+                <IconButton edge="end" className="text-gray-600 dark:text-gray-300">
+                  <SearchIcon />
+                </IconButton>
+              </InputAdornment>
+            ),
+          }}
+        />
+
+        <FormControl fullWidth size="small">
+          <InputLabel>{t('category')}</InputLabel>
+          <Select
+            value={searchCategory}
+            label={t('category')}
+            onChange={(e) => setSearchCategory(e.target.value)}
+            className="bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+          >
+            <MenuItem value="">{t('allCategories')}</MenuItem>
+            <MenuItem value="Laptop">{t('laptop')}</MenuItem>
+            <MenuItem value="Phone">{t('phone')}</MenuItem>
+            <MenuItem value="Moto">{t('moto')}</MenuItem>
+            <MenuItem value="MacBook">{t('macbook')}</MenuItem>
+          </Select>
+        </FormControl>
+
+        <div className="flex items-center justify-end gap-3">
+          {isAdmin && (
             <Button
-              variant="outlined"
-              onClick={() => setViewMode(viewMode === "list" ? "grid" : "list")}
+              variant="contained"
+              startIcon={<AddIcon />}
+              onClick={onAddOpen}
+              className="bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white"
             >
-              {viewMode === "list" ? "Grid ko'rinish" : "List ko'rinish"}
+              {t('add')}
             </Button>
-          </Box>
-        </Grid>
-      </Grid>
-    </Box>
+          )}
+          <Button
+            variant="outlined"
+            onClick={() => setViewMode(viewMode === 'list' ? 'grid' : 'list')}
+            className="text-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-600 hover:border-blue-500 dark:hover:border-blue-400 hover:text-blue-600 dark:hover:text-blue-400"
+          >
+            {viewMode === 'list' ? t('gridView') : t('listView')}
+          </Button>
+        </div>
+      </div>
+    </div>
   );
 };
 

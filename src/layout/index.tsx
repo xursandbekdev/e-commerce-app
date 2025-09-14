@@ -6,10 +6,10 @@ const Layout: React.FC = () => {
   const [searchValue, setSearchValue] = useState("");
 
   return (
-    <>
+    <div className="bg-bg min-h-screen" >
       <Navbar searchValue={searchValue} setSearchValue={setSearchValue} />
       <Outlet context={{ searchValue }} />
-    </>
+    </div>
   );
 };
 

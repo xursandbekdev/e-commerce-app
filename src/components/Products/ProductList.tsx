@@ -1,6 +1,4 @@
-// src/components/ProductsList.tsx
-
-import React from "react";
+import React from 'react';
 import {
   Table,
   TableBody,
@@ -10,22 +8,23 @@ import {
   TableRow,
   Paper,
   IconButton,
-  Grid,
   Card,
   CardContent,
   CardActions,
   Typography,
-} from "@mui/material";
+  Box,
+} from '@mui/material';
 import {
   Edit as EditIcon,
   Delete as DeleteIcon,
   Visibility as VisibilityIcon,
-} from "@mui/icons-material";
-import PaginationGlobal from "../paginition";
-import type { Product } from "../../interface";
+} from '@mui/icons-material';
+import { useTranslation } from 'react-i18next'; // i18next hook
+import PaginationGlobal from '../paginition';
+import type { Product } from '../../interface';
 
 interface ProductsListProps {
-  viewMode: "grid" | "list";
+  viewMode: 'grid' | 'list';
   products: Product[];
   isAdmin: boolean;
   onEditOpen: (product: Product) => void;
@@ -47,20 +46,22 @@ const ProductsList: React.FC<ProductsListProps> = ({
   totalPages,
   onPageChange,
 }) => {
+  const { t, i18n } = useTranslation(); // Tarjima uchun hook
+
   return (
     <>
-      {viewMode === "list" ? (
+      {viewMode === 'list' ? (
         <TableContainer component={Paper} className="bg-offwhite">
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell>ID</TableCell>
-                <TableCell>Nomi</TableCell>
-                <TableCell>Kategoriya</TableCell>
-                <TableCell>Narx</TableCell>
-                <TableCell>Stock</TableCell>
-                <TableCell>Faol</TableCell>
-                <TableCell align="right">Amallar</TableCell>
+                <TableCell>{t('id')}</TableCell>
+                <TableCell>{t('name')}</TableCell>
+                <TableCell>{t('category')}</TableCell>
+                <TableCell>{t('price')}</TableCell>
+                <TableCell>{t('stock')}</TableCell>
+                <TableCell>{t('active')}</TableCell>
+                <TableCell align="right">{t('actions')}</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -68,10 +69,12 @@ const ProductsList: React.FC<ProductsListProps> = ({
                 <TableRow key={product.id}>
                   <TableCell>{product.id}</TableCell>
                   <TableCell>{product.name}</TableCell>
-                  <TableCell>{product.category}</TableCell>
-                  <TableCell>{product.price.toLocaleString()} so'm</TableCell>
+                  <TableCell>{t(product.category.toLowerCase())}</TableCell>
+                  <TableCell>
+                    {new Intl.NumberFormat(i18n.language === 'uz' ? 'uz-UZ' : 'en-US').format(product.price)} {t('currency')}
+                  </TableCell>
                   <TableCell>{product.stock}</TableCell>
-                  <TableCell>{product.isActive ? "Ha" : "Yo'q"}</TableCell>
+                  <TableCell>{product.isActive ? t('yes') : t('no')}</TableCell>
                   <TableCell align="right">
                     <IconButton onClick={() => onDetailsOpen(product)}>
                       <VisibilityIcon />
@@ -93,38 +96,55 @@ const ProductsList: React.FC<ProductsListProps> = ({
           </Table>
         </TableContainer>
       ) : (
-        <Grid container spacing={3}>
+        <Box
+          sx={{
+            display: 'grid',
+            gridTemplateColumns: {
+              xs: 'repeat(1, 1fr)',
+              sm: 'repeat(2, 1fr)',
+              md: 'repeat(3, 1fr)',
+            },
+            gap: 3,
+            mt: 2,
+          }}
+        >
           {products.map((product) => (
-            <Grid item xs={12} sm={6} md={4} key={product.id}>
-              <Card className="bg-offwhite">
-                <CardContent>
-                  <Typography variant="h6" className="text-title">
-                    {product.name}
-                  </Typography>
-                  <Typography className="text-body">Kategoriya: {product.category}</Typography>
-                  <Typography className="text-primary">{product.price.toLocaleString()} so'm</Typography>
-                  <Typography className="text-body">Stock: {product.stock}</Typography>
-                  <Typography className="text-body">Faol: {product.isActive ? "Ha" : "Yo'q"}</Typography>
-                </CardContent>
-                <CardActions>
-                  <IconButton onClick={() => onDetailsOpen(product)}>
-                    <VisibilityIcon />
-                  </IconButton>
-                  {isAdmin && (
-                    <>
-                      <IconButton onClick={() => onEditOpen(product)}>
-                        <EditIcon />
-                      </IconButton>
-                      <IconButton onClick={() => onDeleteOpen(product)}>
-                        <DeleteIcon color="error" />
-                      </IconButton>
-                    </>
-                  )}
-                </CardActions>
-              </Card>
-            </Grid>
+            <Card key={product.id} className="bg-offwhite">
+              <CardContent>
+                <Typography variant="h6" className="text-title">
+                  {product.name}
+                </Typography>
+                <Typography className="text-body">
+                  {t('category')}: {t(product.category.toLowerCase())}
+                </Typography>
+                <Typography className="text-primary">
+                  {new Intl.NumberFormat(i18n.language === 'uz' ? 'uz-UZ' : 'en-US').format(product.price)} {t('currency')}
+                </Typography>
+                <Typography className="text-body">
+                  {t('stock')}: {product.stock}
+                </Typography>
+                <Typography className="text-body">
+                  {t('active')}: {product.isActive ? t('yes') : t('no')}
+                </Typography>
+              </CardContent>
+              <CardActions>
+                <IconButton onClick={() => onDetailsOpen(product)}>
+                  <VisibilityIcon />
+                </IconButton>
+                {isAdmin && (
+                  <>
+                    <IconButton onClick={() => onEditOpen(product)}>
+                      <EditIcon />
+                    </IconButton>
+                    <IconButton onClick={() => onDeleteOpen(product)}>
+                      <DeleteIcon color="error" />
+                    </IconButton>
+                  </>
+                )}
+              </CardActions>
+            </Card>
           ))}
-        </Grid>
+        </Box>
       )}
 
       <PaginationGlobal page={page} pageCount={totalPages} onChange={onPageChange} />

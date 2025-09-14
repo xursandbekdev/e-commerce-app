@@ -1,41 +1,60 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-@import "react-toastify/dist/ReactToastify.css";
-
 
 :root {
-    /* color themes */
   --color-primary: #5F2EEA;
   --color-secondary: #1CC8EE;
-  --color-error:#ED2E7E;
-  --color-success:#00BA88;
-  --color-warning:#F4B740;
+  --color-error: #ED2E7E;
+  --color-success: #00BA88;
+  --color-warning: #F4B740;
+
+  --color-title-active: #14142B;
+  --color-text-body: #4E4B66;
+  --color-label: #6E7191;
+  --color-placeholder: #A0A3BD;
+  --color-line: #A0A3BD;
+  --color-input-bg: #EFF0F6;
+  --color-bg: #F7F7FC;
+  --color-off-white: #FCFCFC;
+
+  --color-text: #FAFAFA;
+  --color-text1: #7D8184;
+  --color-btn: #000000;
+
   --color-linear-primary: linear-gradient(114.44deg, #7433FF 0%, #FFA3FD 100%);
   --color-linear-secondary: linear-gradient(114.44deg, #624AF2 0%, #50DDC3 100%);
   --color-linear-accent: linear-gradient(114.44deg, #EB0055 0%, #FFFA80 100%);
+}
 
-  --color-title-active:#14142B;
-  --color-text-body:#4E4B66;
-  --color-label:#6E7191;
-  --color-placeholder:#A0A3BD;
-  --color-line:#A0A3BD;
-  --color-input-bg:#EFF0F6;
-  --color-bg:#F7F7FC;
-  --color-off-white:#FCFCFC;
+.dark {
+  --color-primary: #8B5CF6;
+  --color-secondary: #38BDF8;
+  --color-error: #F87171;
+  --color-success: #34D399;
+  --color-warning: #FBBF24;
 
-  /* color text */
- --color-text:#FAFAFA;
- --color-text1:#7D8184;
- --color-btn:#000000;
+  --color-title-active: #E5E7EB;
+  --color-text-body: #D1D5DB;
+  --color-label: #9CA3AF;
+  --color-placeholder: #6B7280;
+  --color-line: #4B5563;
+  --color-input-bg: #1F2937;
+  --color-bg: #111827;
+  --color-off-white: #1E1E2F;
 
+  --color-text: #F3F4F6;
+  --color-text1: #9CA3AF;
+  --color-btn: #F9FAFB;
 
+  --color-linear-primary: linear-gradient(114.44deg, #A855F7 0%, #EC4899 100%);
+  --color-linear-secondary: linear-gradient(114.44deg, #6366F1 0%, #22D3EE 100%);
+  --color-linear-accent: linear-gradient(114.44deg, #F43F5E 0%, #FACC15 100%);
+}
 
-
-
-
-
-
-
-
+/* Body rangini moslashtirish */
+body {
+  background-color: var(--color-bg);
+  color: var(--color-text-body);
+  font-family: system-ui, sans-serif;
 }

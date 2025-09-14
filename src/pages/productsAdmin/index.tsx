@@ -1,68 +1,69 @@
-// src/pages/ProductsPage.tsx (Updated with debounced search and better filtering)
-
-import React, { useState, useEffect, useCallback } from "react";
-import { Typography } from "@mui/material";
-import { type SelectChangeEvent } from "@mui/material/Select";
-import { useAuth } from "../../context/authContext";
-import { useGetProductsQuery } from "../../api/apiSlice";
-import ProductsFilters from "../../components/Products/ProductsFilters";
-import ProductsList from "../../components/Products/ProductList";
-import ProductDialog from "../../components/Products/ProductDialog";
-import DeleteConfirmDialog from "../../components/Products/DeleteConfirmDialog";
-import ProductDetailsDialog from "../../components/Products/ProductDetailDialog";
-import type { Product, CreateProductRequest } from "../../interface";
+import React, { useState, useEffect, useCallback } from 'react';
+import { Typography } from '@mui/material';
+import { type SelectChangeEvent } from '@mui/material/Select';
+import { useAuth } from '../../context/authContext';
+import { useGetProductsQuery } from '../../api/apiSlice';
+import ProductsFilters from '../../components/Products/ProductsFilters';
+import ProductsList from '../../components/Products/ProductList';
+import ProductDialog from '../../components/Products/ProductDialog';
+import DeleteConfirmDialog from '../../components/Products/DeleteConfirmDialog';
+import ProductDetailsDialog from '../../components/Products/ProductDetailDialog';
+import type { Product, CreateProductRequest } from '../../interface';
+import { useTranslation } from 'react-i18next';
 
 const ProductsPage: React.FC = () => {
+  const { t } = useTranslation(); 
   const { user } = useAuth();
-  const isAdmin = user?.role === "USER";
+  const isAdmin = user?.role === 'USER'; 
 
-  // States
   const [page, setPage] = useState(1);
-  const [searchName, setSearchName] = useState("");
-  const [searchCategory, setSearchCategory] = useState("");
-  const [viewMode, setViewMode] = useState<"grid" | "list">("list");
+  const [searchName, setSearchName] = useState('');
+  const [searchCategory, setSearchCategory] = useState('');
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('list');
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
   const [formData, setFormData] = useState<CreateProductRequest>({
-    name: "",
-    price: "" as any,
-    stock: "" as any,
-    category: "",
+    name: '',
+    price: '' as any,
+    stock: '' as any,
+    category: '',
     isActive: true,
   });
 
-  // Query with filtering - RTK Query auto-refetches on param change
   const { data: productsResponse, isLoading, error } = useGetProductsQuery({
     page: page - 1,
     size: 10,
-    name: searchName.trim() || undefined, // Trim whitespace
+    name: searchName.trim() || undefined,
     category: searchCategory || undefined,
-  }, {
-    skip: !searchName && !searchCategory, // Optional: skip if no filters
   });
 
   const products = productsResponse?.data?.content || [];
   const totalPages = productsResponse?.data?.totalPages || 0;
+  const totalElements = productsResponse?.data?.totalElements || 0;
 
-  // Reset page when filters change
   useEffect(() => {
     setPage(1);
   }, [searchName, searchCategory]);
 
-  // Debounced search effect (optional, but RTK auto-refetches anyway)
   useEffect(() => {
     const timeoutId = setTimeout(() => {
-      console.log("Filters applied:", { searchName, searchCategory }); // Debug log
+      console.log('Filters applied:', { searchName, searchCategory, page });
     }, 300);
 
     return () => clearTimeout(timeoutId);
-  }, [searchName, searchCategory]);
+  }, [searchName, searchCategory, page]);
 
   const handleAddOpen = useCallback(() => {
-    setFormData({ name: "", price: Number(""), stock: Number(""), category: "", isActive: true });
+    setFormData({
+      name: '',
+      price: '' as any,
+      stock: '' as any,
+      category: '',
+      isActive: true,
+    });
     setIsAddOpen(true);
   }, []);
 
@@ -70,8 +71,8 @@ const ProductsPage: React.FC = () => {
     setSelectedProduct(product);
     setFormData({
       name: product.name,
-      price: Number(product.price.toString()),
-      stock: Number(product.stock.toString()),
+      price: product.price,
+      stock: product.stock,
       category: product.category,
       isActive: product.isActive,
     });
@@ -92,7 +93,7 @@ const ProductsPage: React.FC = () => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]: name === "price" || name === "stock" ? value : value, // Keep as string
+      [name]: value,
     }));
   }, []);
 
@@ -104,25 +105,63 @@ const ProductsPage: React.FC = () => {
     setFormData((prev) => ({ ...prev, category: e.target.value as string }));
   }, []);
 
-  // Close dialogs and reset
   const handleDialogClose = useCallback(() => {
     setIsAddOpen(false);
     setIsEditOpen(false);
-    setFormData({ name: "", price: Number(""), stock: Number(""), category: "", isActive: true });
+    setFormData({
+      name: '',
+      price: '' as any,
+      stock: '' as any,
+      category: '',
+      isActive: true,
+    });
     setSelectedProduct(null);
   }, []);
 
-  if (isLoading) return <div className="flex justify-center items-center h-64">Yuklanmoqda...</div>;
+  if (isLoading) {
+    return (
+      <div className="p-6 bg-bg min-h-screen">
+        <div className="flex justify-center items-center h-64">
+          <Typography variant="h6" className="text-body">
+            {t('productsLoading')} {/* Tarjima */}
+          </Typography>
+        </div>
+      </div>
+    );
+  }
+
   if (error) {
-    console.error("Query error:", error); // Debug log
-    return <div className="text-error">Xatolik yuz berdi: {JSON.stringify(error)}</div>;
+    console.error('Query error:', error);
+    return (
+      <div className="p-6 bg-bg min-h-screen">
+        <div className="text-center">
+          <Typography variant="h6" className="text-error mb-4">
+            {t('errorOccurred')} {/* Tarjima */}
+          </Typography>
+          <Typography variant="body2" className="text-body">
+            {t('productNotFoundOrServerError')} {/* Tarjima */}
+          </Typography>
+          <button
+            onClick={() => window.location.reload()}
+            className="mt-4 px-4 py-2 bg-primary text-white rounded hover:bg-primary/90"
+          >
+            {t('refreshPage')} {/* Tarjima */}
+          </button>
+        </div>
+      </div>
+    );
   }
 
   return (
     <div className="p-6 bg-bg min-h-screen">
-      <Typography variant="h4" className="mb-6 text-title">
-        Mahsulotlar ({products.length} ta topildi)
-      </Typography>
+      <div className="mb-6">
+        <Typography variant="h4" className="text-title mb-2">
+          {t('productsManagement')} {/* Tarjima */}
+        </Typography>
+        <Typography variant="body2" className="text-body">
+          {t('totalProducts', { count: totalElements, displayed: products.length })} {/* Tarjima */}
+        </Typography>
+      </div>
 
       <ProductsFilters
         searchName={searchName}

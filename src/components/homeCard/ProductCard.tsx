@@ -1,24 +1,27 @@
-import React from "react";
-import { Card, CardMedia, CardContent, Typography, Rating, Chip, Box, IconButton } from "@mui/material";
-import { Visibility as EyeIcon } from "@mui/icons-material";
-import type { Product } from "../../interface";
-import Image from "../../assets/register.jpg";
+import React from 'react';
+import { Card, CardMedia, CardContent, Typography, Rating, Chip, Box, IconButton } from '@mui/material';
+import { Visibility as EyeIcon } from '@mui/icons-material';
+import { useTranslation } from 'react-i18next'; 
+import type { Product } from '../../interface';
+import Image from '../../assets/register.jpg';
 
 interface ProductCardProps {
   product: Product;
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
+  const { t } = useTranslation(); 
+
   return (
-    <Card className="relative group shadow-none border border-line bg-offwhite hover:shadow-lg transition-all">
+    <Card className="relative group shadow-none border border-line bg-offwhite dark:bg-off-white hover:shadow-lg transition-all">
       <Chip
-        label={`- 50%`}
-        className="absolute top-3 left-3 z-10 bg-error text-text text-xs font-medium"
+        label={t('discount')} 
+        className="absolute top-3 left-3 z-10 bg-error text-text dark:text-text text-xs font-medium"
         size="small"
       />
       <Box className="absolute top-3 right-3 z-10 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-        <IconButton className="w-8 h-8 bg-offwhite shadow-sm hover:bg-bg">
-          <EyeIcon fontSize="small" className="text-body" />
+        <IconButton className="w-8 h-8 bg-offwhite dark:bg-off-white shadow-sm hover:bg-bg dark:hover:bg-bg">
+          <EyeIcon fontSize="small" className="text-body dark:text-text-body" />
         </IconButton>
       </Box>
       <CardMedia
@@ -26,24 +29,26 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         height="250"
         image={Image}
         alt={product.name}
-        className="h object-contain"
+        className="h-[250px] object-contain"
       />
       <CardContent className="p-4">
-        <Typography className="font-medium text-title mb-2 text-sm">{product.name}</Typography>
+        <Typography className="font-medium text-title dark:text-title-active mb-2 text-sm">
+          {product.name}
+        </Typography>
         <Box className="flex items-center gap-3 mb-2">
-          <Typography className="text-error font-medium">
-            {new Intl.NumberFormat("uz-UZ").format(product.price)} so'm
+          <Typography className="text-error dark:text-error font-medium">
+            {new Intl.NumberFormat('uz-UZ').format(product.price)} {t('currency')} 
           </Typography>
         </Box>
         <Box className="flex items-center gap-2">
           <Rating value={5} readOnly size="small" />
-          <Typography className="text-label text-sm">({Math.floor(23)})</Typography>
+          <Typography className="text-placeholder dark:text-placeholder text-sm">
+            ({Math.floor(23)})
+          </Typography>
         </Box>
       </CardContent>
     </Card>
-
   );
 };
 
 export default ProductCard;
-

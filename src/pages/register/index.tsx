@@ -16,23 +16,25 @@ import { useRegisterMutation } from "../../api/apiSlice";
 import Image from "../../assets/register.jpg";
 import { useAuth } from "../../context/authContext";
 import type { IFormInput } from "../../interface";
+import { useTranslation } from "react-i18next";
 
 const schema = yup
   .object({
-    username: yup.string().required("Username is required"),
-    email: yup.string().email("Invalid email").required("Email is required"),
+    username: yup.string().required("usernameRequired"),
+    email: yup.string().email("invalidEmail").required("emailRequired"),
     password: yup
       .string()
-      .required("Password is required")
-      .min(6, "Password should be at least 6 characters"),
+      .required("passwordRequired")
+      .min(6, "passwordMinLength"),
     confirmPassword: yup
       .string()
-      .oneOf([yup.ref("password")], "Passwords do not match")
-      .required("Please confirm password"),
+      .oneOf([yup.ref("password")], "passwordsDoNotMatch")
+      .required("confirmPassword"),
   })
   .required();
 
 const Register: React.FC = () => {
+  const { t } = useTranslation();
   const {
     control,
     handleSubmit,
@@ -65,14 +67,14 @@ const Register: React.FC = () => {
         };
 
         login(userData as any);
-        toast.success(res.message || "Registration successful!");
+        toast.success(res.message || t("registrationSuccessful"));
 
         setTimeout(() => {
           navigate("/");
         }, 400);
       }
     } catch (err: any) {
-      toast.error(err?.data?.message || "Something went wrong");
+      toast.error(err?.data?.message || t("somethingWentWrong")); // Tarjima
     }
   };
 
@@ -81,7 +83,7 @@ const Register: React.FC = () => {
       <div className="hidden lg:flex lg:w-1/2 items-center justify-center">
         <img
           src={Image}
-          alt="Register Illustration"
+          alt={t("createAccount")} // Tarjima
           className="w-full h-auto object-contain"
         />
       </div>
@@ -89,7 +91,7 @@ const Register: React.FC = () => {
       <div className="w-full lg:w-1/2 flex items-center justify-center p-8 bg-bg">
         <div className="w-full max-w-md space-y-8 bg-offwhite p-8 rounded shadow">
           <h2 className="text-3xl font-bold text-title text-center lg:text-left">
-            Create Account
+            {t("createAccount")} {/* Tarjima */}
           </h2>
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
@@ -99,11 +101,11 @@ const Register: React.FC = () => {
               render={({ field }) => (
                 <TextField
                   {...field}
-                  label="Username"
+                  label={t("username")} // Tarjima
                   variant="standard"
                   fullWidth
                   error={!!errors.username}
-                  helperText={errors.username?.message}
+                  helperText={errors.username?.message ? t(errors.username.message) : ""} // Tarjima
                 />
               )}
             />
@@ -114,11 +116,11 @@ const Register: React.FC = () => {
               render={({ field }) => (
                 <TextField
                   {...field}
-                  label="Email"
+                  label={t("email")} // Tarjima
                   variant="standard"
                   fullWidth
                   error={!!errors.email}
-                  helperText={errors.email?.message}
+                  helperText={errors.email?.message ? t(errors.email.message) : ""} // Tarjima
                 />
               )}
             />
@@ -130,11 +132,11 @@ const Register: React.FC = () => {
                 <TextField
                   {...field}
                   type={showPassword ? "text" : "password"}
-                  label="Password"
+                  label={t("password")} // Tarjima
                   variant="standard"
                   fullWidth
                   error={!!errors.password}
-                  helperText={errors.password?.message}
+                  helperText={errors.password?.message ? t(errors.password.message) : ""} // Tarjima
                   InputProps={{
                     endAdornment: (
                       <InputAdornment position="end">
@@ -158,11 +160,11 @@ const Register: React.FC = () => {
                 <TextField
                   {...field}
                   type="password"
-                  label="Confirm Password"
+                  label={t("confirmPassword")} // Tarjima
                   variant="standard"
                   fullWidth
                   error={!!errors.confirmPassword}
-                  helperText={errors.confirmPassword?.message}
+                  helperText={errors.confirmPassword?.message ? t(errors.confirmPassword.message) : ""} // Tarjima
                 />
               )}
             />
@@ -175,14 +177,14 @@ const Register: React.FC = () => {
               disabled={isLoading}
               className="!py-3 !font-medium"
             >
-              {isLoading ? <Loader className="animate-spin" /> : "Register"}
+              {isLoading ? <Loader className="animate-spin" /> : t("register")} {/* Tarjima */}
             </Button>
           </form>
 
           <Typography className="text-sm text-center text-label">
-            Already have an account?{" "}
+            {t("alreadyHaveAccount")} {/* Tarjima */}
             <Link to="/login" className="text-primary font-medium hover:underline">
-              Sign in
+              {t("signIn")} {/* Tarjima */}
             </Link>
           </Typography>
         </div>

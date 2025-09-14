@@ -1,3 +1,5 @@
+// =================== AUTH ===================
+
 export interface RegisterRequest {
     username: string;
     password: string;
@@ -23,8 +25,6 @@ export interface IFormInput {
     confirmPassword: string;
 }
 
-
-
 export interface LoginResponse {
     success: boolean;
     message: string;
@@ -40,50 +40,6 @@ export interface LoginResponse {
 export interface ILoginForm {
     username: string;
     password: string;
-}
-
-export interface Product {
-    id: number
-    name: string
-    price: number
-    stock: number
-    category: string
-    isActive: boolean
-    createdAt: string
-}
-
-export interface ProductsResponse {
-    success: boolean
-    message: string
-    data: {
-        content: Product[]
-        totalElements: number
-        totalPages: number
-        number: number
-        size: number
-        first: boolean
-        last: boolean
-    }
-}
-
-export interface NavbarProps {
-    searchValue: string;
-    setSearchValue: React.Dispatch<React.SetStateAction<string>>;
-}
-
-export interface HomeCardProps {
-    searchValue: string;
-}
-
-export interface ThemeContextType {
-    darkMode: boolean;
-    toggleTheme: () => void;
-}
-
-export interface PaginationGlobalProps {
-    page: number;
-    pageCount: number;
-    onChange: (value: number) => void;
 }
 
 export type Role = "ADMIN" | "USER" | null;
@@ -103,43 +59,21 @@ export interface AuthContextType {
     loading: boolean;
 }
 
+// =================== THEME ===================
 
-export interface CartItem {
-    id: number;
-    name: string;
-    price: number;
-    quantity: number;
-    image: string;
-    category?: string;
-    stock?: number;
+export interface ThemeContextType {
+    darkMode: boolean;
+    toggleTheme: () => void;
 }
 
-export interface CartContextType {
-    cartItems: CartItem[];
-    addToCart: (item: Omit<CartItem, 'quantity'>, quantity: number) => void;
-    updateQuantity: (id: number, quantity: number) => void;
-    removeFromCart: (id: number) => void;
-    clearCart: () => void;
-    getCartTotal: () => number;
-    getCartItemsCount: () => number;
-    isItemInCart: (itemId: number) => boolean;
+// =================== NAVBAR ===================
+
+export interface NavbarProps {
+    searchValue: string;
+    setSearchValue: React.Dispatch<React.SetStateAction<string>>;
 }
 
-export interface Order {
-    id: string;
-    orderNumber: string;
-    createdAt: string;
-    total: number;
-    status: string;
-}
-
-export interface OrdersResponse {
-    success: boolean;
-    data: Order[];
-}
-
-
-// src/interface.ts (Update or add these interfaces)
+// =================== PRODUCTS ===================
 
 export interface Product {
     id: number;
@@ -154,7 +88,6 @@ export interface Product {
 export interface ProductsResponse {
     success: boolean;
     message: string;
-    //@ts-ignore
     data: {
         content: Product[];
         pageable: {
@@ -199,6 +132,8 @@ export interface CreateProductRequest {
     isActive: boolean;
 }
 
+export interface UpdateProductRequest extends CreateProductRequest { }
+
 export interface ProductDialogProps {
     open: boolean;
     onClose: () => void;
@@ -208,6 +143,112 @@ export interface ProductDialogProps {
     onSwitchChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
     onCategoryChange: (e: React.ChangeEvent<{ value: unknown }>) => void;
     selectedProduct: Product | null;
-  }
+}
 
-export interface UpdateProductRequest extends CreateProductRequest { }
+// =================== CART ===================
+
+export interface CartItem {
+    id: number;
+    name: string;
+    price: number;
+    quantity: number;
+    image: string;
+    category?: string;
+    stock?: number;
+}
+
+export interface CartContextType {
+    cartItems: CartItem[];
+    addToCart: (item: Omit<CartItem, "quantity">, quantity: number) => void;
+    updateQuantity: (id: number, quantity: number) => void;
+    removeFromCart: (id: number) => void;
+    clearCart: () => void;
+    getCartTotal: () => number;
+    getCartItemsCount: () => number;
+    isItemInCart: (itemId: number) => boolean;
+}
+
+// =================== ORDERS ===================
+
+export interface OrderItem {
+    id: number;
+    productId: number;
+    productName: string;
+    quantity: number;
+    unitPrice: number;
+    totalPrice: number;
+}
+
+export interface Order {
+    id: number;
+    customerName: string;
+    customerEmail: string;
+    orderDate: string;
+    status: "PENDING" | "CANCELLED" | string;
+    totalAmount: number;
+    orderItems: OrderItem[];
+}
+
+export interface OrdersResponse {
+    success: boolean;
+    message: string;
+    data: {
+        content: Order[] | null;
+        pageable: {
+            pageNumber: number;
+            pageSize: number;
+            sort: {
+                empty: boolean;
+                unsorted: boolean;
+                sorted: boolean;
+            };
+            offset: number;
+            unpaged: boolean;
+            paged: boolean;
+        };
+        totalElements: number;
+        totalPages: number;
+        last: boolean;
+        size: number;
+        number: number;
+        sort: {
+            empty: boolean;
+            unsorted: boolean;
+            sorted: boolean;
+        };
+        numberOfElements: number;
+        first: boolean;
+        empty: boolean;
+    };
+}
+
+export interface OrderResponse {
+    success: boolean;
+    message: string;
+    data: Order;
+}
+
+export interface CreateOrderRequest {
+    customerName: string;
+    customerEmail: string;
+    orderItems: {
+        productId: number;
+        quantity: number;
+    }[];
+}
+
+export interface UpdateStatusRequest {
+    status: "PENDING" | "CANCELLED" | string;
+}
+
+// =================== OTHER ===================
+
+export interface HomeCardProps {
+    searchValue: string;
+}
+
+export interface PaginationGlobalProps {
+    page: number;
+    pageCount: number;
+    onChange: (value: number) => void;
+}

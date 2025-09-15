@@ -1,9 +1,10 @@
-import React from 'react'
+/// <reference types="cypress" />
+
 import App from './App'
 
-describe('<App />', () => {
-  it('renders', () => {
-    // see: https://on.cypress.io/mounting-react
+describe('App', () => {
+  it('mounts', () => {
+    //@ts-ignore
     cy.mount(<App />)
   })
 })

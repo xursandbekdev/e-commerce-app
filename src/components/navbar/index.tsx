@@ -178,7 +178,6 @@ const Navbar: React.FC<NavbarProps> = ({ searchValue, setSearchValue }) => {
               location.pathname !== '/orders' &&
               location.pathname !== '/productsAdmin' && <CartBadge />}
 
-            {/* LanguageSelect komponentini ishlatish */}
             <Box className="hidden sm:block">
               <LanguageSelect language={language} setLanguage={setLanguage} />
             </Box>
@@ -187,9 +186,9 @@ const Navbar: React.FC<NavbarProps> = ({ searchValue, setSearchValue }) => {
               <Box className="hidden sm:flex gap-2">
                 <Button
                   onClick={() => navigate('/login')}
-                  variant="outlined"
+                  variant="contained"
                   size="small"
-                  className="text-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-600 hover:border-blue-500 dark:hover:border-blue-400 hover:text-blue-600 dark:hover:text-blue-400"
+                  className="text-gray-700 dark:text-gray-300 border-gray-300  dark:border-gray-600 hover:border-blue-500 dark:hover:border-blue-400 hover:text-blue-600 dark:hover:text-blue-400"
                 >
                   {t('signIn')}
                 </Button>

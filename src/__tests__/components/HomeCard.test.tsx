@@ -4,7 +4,7 @@ import HomeCard from "../../components/homeCard";
 import { useGetProductsQuery } from "../../api/apiSlice";
 import type { Product } from "../../interface";
 
-jest.mock("../api/apiSlice", () => ({
+jest.mock("@/api/apiSlice", () => ({
     useGetProductsQuery: jest.fn(),
 }));
 

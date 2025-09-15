@@ -18,7 +18,11 @@ describe("ProductCard Component", () => {
 
         expect(screen.getByText("Test Laptop")).toBeInTheDocument();
 
-        expect(screen.getByText(/1\s*500\s*000\s*so'm/)).toBeInTheDocument();
+        // Flexible price matcher
+        const priceElement = screen.getByText((content) =>
+            content.replace(/\s+/g, "").includes("1500000so'm")
+        );
+        expect(priceElement).toBeInTheDocument();
 
         const ratingElement = screen.getByRole("img", { name: /5 stars/i });
         expect(ratingElement).toBeInTheDocument();
@@ -51,7 +55,10 @@ describe("ProductCard Component", () => {
 
         render(<ProductCard product={productWithLargePrice} />);
 
-        expect(screen.getByText(/12\s*500\s*000\s*so'm/)).toBeInTheDocument();
+        const priceElement = screen.getByText((content) =>
+            content.replace(/\s+/g, "").includes("12500000so'm")
+        );
+        expect(priceElement).toBeInTheDocument();
     });
 
     it("renders with different product data", () => {
@@ -68,6 +75,10 @@ describe("ProductCard Component", () => {
         render(<ProductCard product={differentProduct} />);
 
         expect(screen.getByText("Gaming Mouse")).toBeInTheDocument();
-        expect(screen.getByText(/250\s*000\s*so'm/)).toBeInTheDocument();
+
+        const priceElement = screen.getByText((content) =>
+            content.replace(/\s+/g, "").includes("250000so'm")
+        );
+        expect(priceElement).toBeInTheDocument();
     });
 });
